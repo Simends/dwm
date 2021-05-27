@@ -113,6 +113,7 @@ static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browsercmd[]  = { "firefox", NULL };
 static const char *lockcmd[]  = { "light-locker-command", "-l", NULL };
 static const char *calccmd[]  = { "gnome-calculator", NULL };
+static const char *layoutmenu_cmd = "layoutmenu.sh";
 
 #include "focusurgent.c"
 static Key keys[] = {
@@ -201,7 +202,7 @@ static Key keys[] = {
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+	{ ClkLtSymbol,          0,              Button3,        layoutmenu,     {0} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
