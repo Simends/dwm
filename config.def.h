@@ -114,6 +114,7 @@ static const char *browsercmd[]  = { "firefox", NULL };
 static const char *lockcmd[]  = { "light-locker-command", "-l", NULL };
 static const char *calccmd[]  = { "gnome-calculator", NULL };
 
+#include "focusurgent.c"
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ Mod1Mask,                     XK_space,  spawn,          {.v = dmenucmd } },
@@ -192,6 +193,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {1} },
 	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {0} },
+	{ MODKEY,                       XK_u,      focusurgent,    {0} },
 };
 
 /* button definitions */
