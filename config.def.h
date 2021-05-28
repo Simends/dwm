@@ -58,7 +58,7 @@ static const char *const autostart[] = {
 	"light-locker", NULL,
 	"redshift", "-c", "/home/simen/.config/redshift/redshift.conf", NULL,
 	"keepassxc", NULL,
-	"setwp", "-R", NULL,
+	"/home/simen/.local/bin/setwp", "-R", NULL,
 	NULL /* terminate */
 };
 
@@ -86,6 +86,8 @@ static int resizehints = 1;    /* 1 means respect size hints in tiled resizals *
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
+#include "focusurgent.c"
+#include <X11/XF86keysym.h>
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -106,33 +108,11 @@ static const Layout layouts[] = {
 	{ NULL,       NULL },
 };
 
-/* key definitions */
-#define MODKEY Mod4Mask
-#define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
-
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-
-/* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-c", "-l", "20", NULL };
-static const char *termcmd[]  = { "alacritty", NULL };
-static const char *browsercmd[]  = { "firefox", NULL };
-static const char *explorercmd[]  = { "nautilus", NULL };
-static const char *lockcmd[]  = { "light-locker-command", "-l", NULL };
-static const char *calccmd[]  = { "gnome-calculator", NULL };
-static const char *layoutmenu_cmd = "layoutmenu.sh";
-
-#include "focusurgent.c"
-#include <X11/XF86keysym.h>
-
 /*
  * Xresources preferences to load at startup
  */
+
+/* commands */
 ResourcePref resources[] = {
 		{ "background",        STRING,  &normbgcolor },
 		{ "normbordercolor",    STRING,  &normbordercolor },
@@ -151,8 +131,38 @@ ResourcePref resources[] = {
 		{ "showbar",          	INTEGER, &showbar },
 		{ "topbar",          	INTEGER, &topbar },
 		{ "nmaster",          	INTEGER, &nmaster },
-		{ "resizehints",       	INTEGER, &resizehints },
+        { "resizehints",       	INTEGER, &resizehints },
 		{ "mfact",      	 	FLOAT,   &mfact },
+};
+
+/* key definitions */
+#define MODKEY Mod4Mask
+#define TAGKEYS(KEY,TAG) \
+	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+
+/* helper for spawning shell commands in the pre dwm-5.0 fashion */
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+
+/* Some programs */
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-c", "-l", "20", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
+static const char *browsercmd[]  = { "firefox", NULL };
+static const char *explorercmd[]  = { "nautilus", NULL };
+static const char *lockcmd[]  = { "light-locker-command", "-l", NULL };
+static const char *calccmd[]  = { "gnome-calculator", NULL };
+static const char *layoutmenu_cmd = "layoutmenu.sh";
+
+static Key on_empty_keys[] = {
+    /* modifier key            function                argument */
+    { 0,        XK_w,          spawn,                  {.v = browsercmd } },
+    { 0,        XK_t,          spawn,                  {.v = termcmd } },
+    { 0,        XK_e,          spawn,                  {.v = explorercmd } },
+    { 0,        XK_c,          spawn,                  {.v = calccmd } },
+    { 0,        XK_v,          spawn,                  SHCMD("alacritty -e nvim")},
 };
 
 static Key keys[] = {
@@ -261,4 +271,5 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+
 

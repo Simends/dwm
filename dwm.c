@@ -183,6 +183,7 @@ typedef struct {
 	void *dst;
 } ResourcePref;
 
+
 /* function declarations */
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
@@ -216,10 +217,11 @@ static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
-static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
+static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabkeys(void);
 static void incnmaster(const Arg *arg);
+static int  isempty;
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void layoutmenu(const Arg *arg);
@@ -1059,6 +1061,16 @@ focus(Client *c)
 	}
 	selmon->sel = c;
 	drawbars();
+
+	if (!c){
+		if (!isempty) {
+			isempty = 1;
+			grabkeys();
+		}
+	} else if (isempty) {
+		isempty = 0;
+		grabkeys();
+	}
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
@@ -1216,6 +1228,14 @@ grabkeys(void)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
 						True, GrabModeAsync, GrabModeAsync);
+
+		if(!selmon->sel) {
+			for (i = 0; i < LENGTH(on_empty_keys); i++)
+				if ((code = XKeysymToKeycode(dpy, on_empty_keys[i].keysym)))
+					for (j = 0; j < LENGTH(modifiers); j++)
+						XGrabKey(dpy, code, on_empty_keys[i].mod | modifiers[j], root,
+								True, GrabModeAsync, GrabModeAsync);
+		}
 	}
 }
 
@@ -1252,6 +1272,13 @@ keypress(XEvent *e)
 		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
 		&& keys[i].func)
 			keys[i].func(&(keys[i].arg));
+	if(!selmon->sel) {
+		for (i = 0; i < LENGTH(on_empty_keys); i++)
+			if (keysym == on_empty_keys[i].keysym
+					&& CLEANMASK(on_empty_keys[i].mod) == CLEANMASK(ev->state)
+					&& on_empty_keys[i].func)
+				on_empty_keys[i].func(&(on_empty_keys[i].arg));
+	}
 }
 
 void
