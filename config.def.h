@@ -166,7 +166,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_x,                spawn,               SHCMD("xkill")},
 	{ MODKEY|ShiftMask,             XK_w,                spawn,               SHCMD("searchmenu.sh")},
     { 0,                            XF86XK_Calculator,   spawn,               {.v = calccmd } },
-    { 0,                            XF86XK_AudioMute,    spawn,               SHCMD("pulsemixer --toggle-mute && notify-send Mute 'Toggled mute'")},
+    { 0,                            XF86XK_AudioMute,    spawn,               SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle && notify-send Mute 'Toggled mute'")},
 	{ MODKEY,                       XK_b,                togglebar,           {0} },
 	{ MODKEY|ShiftMask,             XK_j,                rotatestack,         {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,                rotatestack,         {.i = -1 } },
