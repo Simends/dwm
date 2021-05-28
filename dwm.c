@@ -141,6 +141,9 @@ typedef struct {
 	int monitor;
 } Rule;
 
+
+static int isempty;
+
 /* function declarations */
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
@@ -803,6 +806,16 @@ focus(Client *c)
 	}
 	selmon->sel = c;
 	drawbars();
+
+	if (!c){
+		if (!isempty) {
+			isempty = 1;
+			grabkeys();
+		}
+	} else if (isempty) {
+		isempty = 0;
+		grabkeys();
+	}
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
@@ -960,6 +973,14 @@ grabkeys(void)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
 						True, GrabModeAsync, GrabModeAsync);
+
+		if(!selmon->sel) {
+			for (i = 0; i < LENGTH(on_empty_keys); i++)
+				if ((code = XKeysymToKeycode(dpy, on_empty_keys[i].keysym)))
+					for (j = 0; j < LENGTH(modifiers); j++)
+						XGrabKey(dpy, code, on_empty_keys[i].mod | modifiers[j], root,
+								True, GrabModeAsync, GrabModeAsync);
+		}
 	}
 }
 
@@ -996,6 +1017,13 @@ keypress(XEvent *e)
 		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
 		&& keys[i].func)
 			keys[i].func(&(keys[i].arg));
+	if(!selmon->sel) {
+		for (i = 0; i < LENGTH(on_empty_keys); i++)
+			if (keysym == on_empty_keys[i].keysym
+					&& CLEANMASK(on_empty_keys[i].mod) == CLEANMASK(ev->state)
+					&& on_empty_keys[i].func)
+				on_empty_keys[i].func(&(on_empty_keys[i].arg));
+	}
 }
 
 void

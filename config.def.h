@@ -113,3 +113,9 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+static const char* firefoxcmd[] = {"firefox", NULL};
+static Key on_empty_keys[] = {
+	/* modifier key            function                argument */
+	{ 0,        XK_f,          spawn,                  {.v = firefoxcmd } },
+};
+
