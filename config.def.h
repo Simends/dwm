@@ -162,7 +162,11 @@ static Key on_empty_keys[] = {
     { 0,        XK_t,          spawn,                  {.v = termcmd } },
     { 0,        XK_e,          spawn,                  {.v = explorercmd } },
     { 0,        XK_c,          spawn,                  {.v = calccmd } },
+    { 0,        XK_space,      spawn,                  {.v = dmenucmd } },
+    { 0,        XK_Escape,     spawn,                  {.v = lockcmd } },
     { 0,        XK_v,          spawn,                  SHCMD("alacritty -e nvim")},
+    { 0,        XK_p,          spawn,                  SHCMD("alacritty -e ide -f")},
+    { 0,        XK_s,          spawn,                  SHCMD("alacritty -e settings")},
 };
 
 static Key keys[] = {
@@ -170,7 +174,7 @@ static Key keys[] = {
 	{ Mod1Mask,                     XK_space,            spawn,               {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return,           spawn,               {.v = termcmd } },
 	{ MODKEY,                       XK_w,                spawn,               {.v = browsercmd } },
-	{ MODKEY,                       XK_o,                spawn,               {.v = lockcmd } },
+	{ MODKEY,                       XK_Escape,           spawn,               {.v = lockcmd } },
 	{ MODKEY,                       XK_e,                spawn,               {.v = explorercmd } },
 	{ MODKEY,                       XK_z,                spawn,               SHCMD("powermenu.sh")},
 	{ MODKEY,                       XK_x,                spawn,               SHCMD("xkill")},
